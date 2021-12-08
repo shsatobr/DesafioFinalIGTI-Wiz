@@ -29,7 +29,7 @@ namespace DesafioFinalIGTIWiz.Controllers
             };
             await _livrariaDbContext.Roles.AddAsync(role);
             await _livrariaDbContext.SaveChangesAsync();
-            return Ok("Regra incluido com sucesso");
+            return Ok("Cargo incluido com sucesso");
         }
     }
 }

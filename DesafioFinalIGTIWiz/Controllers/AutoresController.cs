@@ -2,6 +2,7 @@
 using DesafioFinalIGTIWiz.InputModel;
 using DesafioFinalIGTIWiz.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,12 @@ namespace DesafioFinalIGTIWiz.Controllers
             return Ok("Cadastro de autor feito com sucesso");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ListarAutores()
+        {
+            var autor = await _livrariaDbContext.Autores.ToListAsync();
+            return Ok(autor);
+        }
 
     }
 }

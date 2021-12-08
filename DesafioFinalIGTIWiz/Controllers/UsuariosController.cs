@@ -2,6 +2,7 @@
 using DesafioFinalIGTIWiz.InputModel;
 using DesafioFinalIGTIWiz.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +24,22 @@ namespace DesafioFinalIGTIWiz.Controllers
         [HttpPost]
         public async Task<IActionResult> CadastrarUsuario(UsuarioInput dadosEntrada)
         {
-            var usuario = new Usuario()
+            var role = await _livrariaDbContext.Roles.Where(x => x.Id == dadosEntrada.RoleId).FirstOrDefaultAsync();
+            if (role != null)
             {
-                Nome = dadosEntrada.Nome,
-                Email = dadosEntrada.Email,
-                Senha = dadosEntrada.Senha,
-                RoleId = dadosEntrada.RoleId,
-                CriadoEm = DateTime.Now
-            };
-            await _livrariaDbContext.Usuarios.AddAsync(usuario);
-            await _livrariaDbContext.SaveChangesAsync();
-            return Ok("Cadastro de usuário feito com sucesso");
+                var usuario = new Usuario()
+                {
+                    Nome = dadosEntrada.Nome,
+                    Email = dadosEntrada.Email,
+                    Senha = dadosEntrada.Senha,
+                    RoleId = dadosEntrada.RoleId,
+                    CriadoEm = DateTime.Now
+                };
+                await _livrariaDbContext.Usuarios.AddAsync(usuario);
+                await _livrariaDbContext.SaveChangesAsync();
+                return Ok("Cadastro de usuário feito com sucesso");
+            }
+            return NotFound("Cargo não cadastrado");
         }
         
     }
