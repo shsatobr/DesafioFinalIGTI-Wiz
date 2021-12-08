@@ -11,27 +11,25 @@ namespace DesafioFinalIGTIWiz.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class AutoresController :ControllerBase
+    public class RolesController: ControllerBase
     {
         private readonly LivrariaDbContext _livrariaDbContext;
-        public AutoresController(LivrariaDbContext livrariaDbContext)
+
+        public RolesController(LivrariaDbContext livrariaDbContext)
         {
             _livrariaDbContext = livrariaDbContext;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarAutor(AutorInput dadosEntrada)
+        public async Task<IActionResult> CadastrarRole(RoleInput dadosEntrada)
         {
-            var autor = new Autor()
+            var role = new Role()
             {
-                Nome = dadosEntrada.Nome,
-                Sobrenome = dadosEntrada.Sobrenome
+                Nome = dadosEntrada.Nome
             };
-            await _livrariaDbContext.Autores.AddAsync(autor);
+            await _livrariaDbContext.Roles.AddAsync(role);
             await _livrariaDbContext.SaveChangesAsync();
-            return Ok("Cadastro de autor feito com sucesso");
+            return Ok("Regra incluido com sucesso");
         }
-
-
     }
 }
