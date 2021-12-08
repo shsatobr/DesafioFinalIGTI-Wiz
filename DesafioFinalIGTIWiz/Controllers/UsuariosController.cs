@@ -28,7 +28,8 @@ namespace DesafioFinalIGTIWiz.Controllers
                 Nome = dadosEntrada.Nome,
                 Email = dadosEntrada.Email,
                 Senha = dadosEntrada.Senha,
-                RoleId = dadosEntrada.RoleId
+                RoleId = dadosEntrada.RoleId,
+                CriadoEm = DateTime.Now
             };
             await _livrariaDbContext.Usuarios.AddAsync(usuario);
             await _livrariaDbContext.SaveChangesAsync();

@@ -11,6 +11,5 @@ namespace DesafioFinalIGTIWiz.InputModel
         public string Email { get; set; }
         public string Senha { get; set; }
         public int RoleId { get; set; }
-        public DateTime CriadoEm { get; set; }
      }
 }

@@ -28,7 +28,8 @@ namespace DesafioFinalIGTIWiz.Controllers
                 Descricao = dadosEntrada.Descricao,
                 ISBN = dadosEntrada.ISBN,
                 AnoLancamento = dadosEntrada.AnoLancamento,
-                AutorId = dadosEntrada.AutorId
+                AutorId = dadosEntrada.AutorId,
+                CriadoEm = DateTime.Now
             };
 
             await _livrariaDbContext.Livros.AddAsync(livro);

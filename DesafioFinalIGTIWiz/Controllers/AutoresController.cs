@@ -25,7 +25,8 @@ namespace DesafioFinalIGTIWiz.Controllers
             var autor = new Autor()
             {
                 Nome = dadosEntrada.Nome,
-                Sobrenome = dadosEntrada.Sobrenome
+                Sobrenome = dadosEntrada.Sobrenome,
+                CriadoEm = DateTime.Now
             };
             await _livrariaDbContext.Autores.AddAsync(autor);
             await _livrariaDbContext.SaveChangesAsync();
