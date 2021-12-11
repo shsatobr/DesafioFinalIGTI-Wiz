@@ -1,6 +1,9 @@
 ﻿using DesafioFinalIGTIWiz.Context;
+using DesafioFinalIGTIWiz.Dados.Repositorio;
+using DesafioFinalIGTIWiz.Dados.Repositorio.Interfaces;
 using DesafioFinalIGTIWiz.InputModel;
 using DesafioFinalIGTIWiz.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,33 +17,60 @@ namespace DesafioFinalIGTIWiz.Controllers
     [Route("api/v1/[controller]")]
     public class UsuariosController : ControllerBase
     {
-        private readonly LivrariaDbContext _livrariaDbContext;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public UsuariosController(LivrariaDbContext livrariaDbContext)
+        public UsuariosController(IUsuarioRepository usuarioRepository)
         {
-            _livrariaDbContext = livrariaDbContext;
+            _usuarioRepository = usuarioRepository;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarUsuario(UsuarioInput dadosEntrada)
+        public async Task<IActionResult> CadastrarUsuario([FromBody] Usuario usuario)
         {
-            var role = await _livrariaDbContext.Roles.Where(x => x.Id == dadosEntrada.RoleId).FirstOrDefaultAsync();
-            if (role != null)
+            try
             {
-                var usuario = new Usuario()
+                if (usuario == null)
                 {
-                    Nome = dadosEntrada.Nome,
-                    Email = dadosEntrada.Email,
-                    Senha = dadosEntrada.Senha,
-                    RoleId = dadosEntrada.RoleId,
-                    CriadoEm = DateTime.Now
-                };
-                await _livrariaDbContext.Usuarios.AddAsync(usuario);
-                await _livrariaDbContext.SaveChangesAsync();
-                return Ok("Cadastro de usuário feito com sucesso");
+                    return BadRequest();
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+                if (!usuario.EhValido())
+                {
+                    return BadRequest();
+                }
+                var affectedRows = await _usuarioRepository.Adicionar(usuario);
+                if (affectedRows == 1)
+                {
+                    return Ok();
+
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
             }
-            return NotFound("Cargo não cadastrado");
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                { 
+                    CodigoStatus = StatusCodes.Status500InternalServerError,
+                    Mensagem = e.Message
+                });
+            }
+
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var usuarios = await _usuarioRepository.RecuperarTodos();
+            return Ok(usuarios);
+        }
+     
         
     }
 }

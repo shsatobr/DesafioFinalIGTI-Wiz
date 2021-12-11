@@ -1,4 +1,9 @@
+using DesafioFinalIGTIWiz.Configuracao;
 using DesafioFinalIGTIWiz.Context;
+using DesafioFinalIGTIWiz.Dados.Repositorio;
+using DesafioFinalIGTIWiz.Dados.Repositorio.Interfaces;
+using DesafioFinalIGTIWiz.Services.Auth.Jwt;
+using DesafioFinalIGTIWiz.Services.Auth.Jwt.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,16 +33,38 @@ namespace DesafioFinalIGTIWiz
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Contextos
+            // Contextos
             services.AddDbContext<LivrariaDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            #endregion
 
+            // Swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo() { Title = "Livraria", Version = "v1" });
             });
 
+            #region JWT
+            // Configurações JWT
+            var sessao = Configuration.GetSection("JwtConfiguracoes");
+            services.Configure<JwtConfiguracoes>(sessao);
+
+            //Serviços / Gerenciamento JWT
+            services.AddScoped<IJwtAuthGerenciador, JwtAuthGerenciador>();
+
+            // Autenticacao JWT
+            services.AddConfiguracaoAuth(Configuration);
+
+            // Repositorios
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            // services.AddScope<IContatoRepositorio, ContatoRepositorio();
+
+            #endregion
+
+            // Controllers
             services.AddControllers();
         }
 
